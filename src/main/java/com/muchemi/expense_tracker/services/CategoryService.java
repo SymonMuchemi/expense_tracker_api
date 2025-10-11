@@ -24,6 +24,17 @@ public class CategoryService {
             throw new ResourceConflictException("Category name cannot be empty or null.");
         }
 
+        if (dto.name().length() > 100) {
+            throw new ResourceConflictException("Category name cannot exceed 100 characters.");
+        }
+
+        String normalizedName = dto.name().trim();
+        boolean exists = categoryRepository.existsByNameIgnoreCase(normalizedName);
+
+        if (exists) {
+            throw new ResourceConflictException("Category name '" + dto.name() + "' already exists.");
+        }
+
         Category category = new Category();
         category.setName(dto.name());
         try {
@@ -58,6 +69,14 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO dto) {
+         if (dto.name() == null || dto.name().trim().isEmpty()) {
+            throw new ResourceConflictException("Category name cannot be empty or null.");
+        }
+
+        if (dto.name().length() > 100) {
+            throw new ResourceConflictException("Category name cannot exceed 100 characters.");
+        }
+
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
