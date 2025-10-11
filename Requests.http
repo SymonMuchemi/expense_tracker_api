@@ -46,5 +46,13 @@ Content-Type: application/json
     "name": "Rent"
 }
 
+### Create a category with missing fields
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "category_name": "Closet Update"
+}
+
 ### Delete a category
 DELETE http://localhost:8080/api/categories/3

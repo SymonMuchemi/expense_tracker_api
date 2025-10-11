@@ -20,6 +20,10 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO createNewCategory(CategoryRequestDTO dto) {
+        if (dto.name() == null || dto.name().trim().isEmpty()) {
+            throw new ResourceConflictException("Category name cannot be empty or null.");
+        }
+
         Category category = new Category();
         category.setName(dto.name());
         try {
