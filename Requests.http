@@ -8,3 +8,21 @@ Content-Type: application/json
 {
   "name": "Rent"
 }
+### Create a new category
+POST localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "School Fees"
+}
+
+### Create a new category
+POST localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "Medical Insurance"
+}
+
+### Get all Categories
+GET http://localhost:8080/api/categories

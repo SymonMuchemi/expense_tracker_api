@@ -7,6 +7,8 @@ import com.muchemi.expense_tracker.repositories.CategoryRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CategoryService {
     private static CategoryRepository categoryRepository = null;
@@ -29,4 +31,12 @@ public class CategoryService {
             throw new RuntimeException("Unexpected error while creating category: " + exception.getMessage());
         }
     }
+
+    public List<CategoryResponseDTO> getAllCategories() {
+        return categoryRepository.findAll()
+            .stream()
+            .map(category -> new CategoryResponseDTO(category.getId(), category.getName()))
+            .toList();
+    }
+
 }
