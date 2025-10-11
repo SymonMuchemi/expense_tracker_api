@@ -1,4 +1,10 @@
 ### Test routes
 GET http://localhost:8080/
 
-###
+### Create a new category
+POST localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "Rent"
+}
