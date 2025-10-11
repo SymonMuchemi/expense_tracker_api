@@ -1,0 +1,66 @@
+### Test routes
+GET http://localhost:8080/
+
+### Create a new category
+POST localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "Rent"
+}
+### Create a new category
+POST localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "School Fees"
+}
+
+### Create a new category
+POST localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "name": "Medical Insurance"
+}
+
+### Get all Categories
+GET http://localhost:8080/api/categories
+
+### Get a single category
+GET http://localhost:8080/api/categories/1
+
+### Update a category
+PUT http://localhost:8080/api/categories/2
+Content-Type: application/json
+
+{
+  "name": "Tuition Fees"
+}
+
+### Create an already present category
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+    "name": "Rent"
+}
+
+### Create an already present category
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+    "name": "rent"
+}
+
+### Create a category with missing fields
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+  "category_name": "Closet Update"
+}
+
+### Delete a category
+DELETE http://localhost:8080/api/categories/3
