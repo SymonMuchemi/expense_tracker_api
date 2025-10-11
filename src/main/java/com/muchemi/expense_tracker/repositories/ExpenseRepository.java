@@ -1,6 +1,6 @@
-package com.muchemi.expense_tracker.Repositories;
+package com.muchemi.expense_tracker.repositories;
 
-import com.muchemi.expense_tracker.Entities.Expense;
+import com.muchemi.expense_tracker.entities.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {

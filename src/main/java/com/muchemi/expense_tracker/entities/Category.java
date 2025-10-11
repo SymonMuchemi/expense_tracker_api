@@ -1,4 +1,4 @@
-package com.muchemi.expense_tracker.Entities;
+package com.muchemi.expense_tracker.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
