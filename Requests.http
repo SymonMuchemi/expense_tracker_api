@@ -30,5 +30,13 @@ GET http://localhost:8080/api/categories
 ### Get a single category
 GET http://localhost:8080/api/categories/1
 
+### Update a category
+PUT http://localhost:8080/api/categories/2
+Content-Type: application/json
+
+{
+  "name": "Tuition Fees"
+}
+
 ### Delete a category
 DELETE http://localhost:8080/api/categories/3
