@@ -3,8 +3,10 @@ package com.muchemi.expense_tracker.services;
 import com.muchemi.expense_tracker.dto.CategoryRequestDTO;
 import com.muchemi.expense_tracker.dto.CategoryResponseDTO;
 import com.muchemi.expense_tracker.entities.Category;
+import com.muchemi.expense_tracker.exceptions.ResourceConflictException;
+import com.muchemi.expense_tracker.exceptions.ResourceNotFoundException;
 import com.muchemi.expense_tracker.repositories.CategoryRepository;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,17 +20,14 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO createNewCategory(CategoryRequestDTO dto) {
+        Category category = new Category();
+        category.setName(dto.name());
         try {
-            Category category = new Category();
-            category.setName(dto.name());
-
             Category savedCategory = categoryRepository.save(category);
 
             return new CategoryResponseDTO(savedCategory.getId(), savedCategory.getName());
-        } catch (DataAccessException exception) {
-            throw new RuntimeException("Failed to create category: " + exception.getMessage());
-        } catch (Exception exception) {
-            throw new RuntimeException("Unexpected error while creating category: " + exception.getMessage());
+        } catch (DataIntegrityViolationException exception) {
+            throw new ResourceConflictException("Category name '" + dto.name() + "' already exists.");
         }
     }
 
@@ -41,14 +40,14 @@ public class CategoryService {
 
     public CategoryResponseDTO getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
         return new CategoryResponseDTO(category.getId(), category.getName());
     }
 
     public Long removeCategoryById(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
+            throw new ResourceNotFoundException("Category not found with id: " + id);
         }
         categoryRepository.deleteById(id);
         return id;
@@ -56,12 +55,16 @@ public class CategoryService {
 
     public CategoryResponseDTO updateCategory(Long id, CategoryRequestDTO dto) {
         Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+            .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
         category.setName(dto.name());
 
-        Category updatedCategory = categoryRepository.save(category);
+        try{
+            Category updatedCategory = categoryRepository.save(category);
 
-        return new CategoryResponseDTO(updatedCategory.getId(), updatedCategory.getName());
+            return new CategoryResponseDTO(updatedCategory.getId(), updatedCategory.getName());
+        } catch (DataIntegrityViolationException e) {
+            throw new ResourceConflictException("Category name '" + dto.name() + "' already exists or is invalid.");
+        }
     }
 }
