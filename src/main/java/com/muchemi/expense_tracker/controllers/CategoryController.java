@@ -32,4 +32,16 @@ public class CategoryController {
 
         return ResponseEntity.ok(categoryResponseDTOList);
     }
+
+    @GetMapping("{id}")
+    public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable Long id) {
+        CategoryResponseDTO response = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Long> deleteCategoryById(@PathVariable Long id) {
+        Long deletedId = categoryService.removeCategoryById(id);
+        return ResponseEntity.ok(deletedId);
+    }
 }

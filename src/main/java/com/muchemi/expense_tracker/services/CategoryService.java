@@ -39,4 +39,18 @@ public class CategoryService {
             .toList();
     }
 
+    public CategoryResponseDTO getCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+
+        return new CategoryResponseDTO(category.getId(), category.getName());
+    }
+
+    public Long removeCategoryById(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new RuntimeException("Category not found with id: " + id);
+        }
+        categoryRepository.deleteById(id);
+        return id;
+    }
 }
