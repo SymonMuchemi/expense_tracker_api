@@ -1,0 +1,504 @@
+{
+	"info": {
+		"_postman_id": "b5a7b0f2-9cda-44d7-8a16-fd7d8eb9fb0f",
+		"name": "Expense Tracker",
+		"description": "This collection provides a comprehensive set of requests for testing the **Expense Tracker REST API**, which is built using **Spring Boot 3** and **Spring Data JPA** with a **PostgreSQL** backend.\n\n---\n\n### 🛠️ Purpose\n\nThe API is designed to allow a single user to manage their personal financial data, providing full **CRUD** (Create, Read, Update, Delete) functionality for Categories and Expenses.\n\n### 🎯 Key Features & Endpoints\n\n| Resource | Endpoints | Purpose |\n| :--- | :--- | :--- |\n| **Categories** | `/api/categories` | Manage the types of expenses (e.g., Food, Travel, Utilities). Designed with a **unique name constraint**. |\n| **Expenses** | `/api/expenses` | Record individual transactions, ensuring data integrity by requiring a valid `categoryId` and an `amount` greater than zero. |\n\n### 🚨 Robust Error Handling Showcase\n\nThis collection includes requests specifically structured to demonstrate the API's centralized exception handling logic. This confirms the system correctly returns clean, consistent responses for common failure modes:\n\n* **404 NOT FOUND:** Attempting to retrieve, update, or delete a resource using an ID that does not exist.\n* **409 CONFLICT:** Attempting to create or update a Category with a name that already exists (violating the unique constraint).\n* **400 BAD REQUEST:** Submitting an invalid payload, such as a missing required field (due to DTO validation) or an amount less than or equal to zero.\n\n### 🚀 Setup Notes\n\n* **Base URL:** All requests use the collection variable `{{baseUrl}}`. Please set this to `http://localhost:8080` in your Postman environment settings.\n* **Dependencies:** The API requires a running **PostgreSQL** instance with the correct user permissions (as configured in `application.properties`).\n* **Testing Flow:** It is recommended to run the requests in the following order:\n    1.  Create a **Category** (to get an ID).\n    2.  Use the returned Category ID to create an **Expense**.\n    3.  Test the various **GET, PUT, and DELETE** endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33408943"
+	},
+	"item": [
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "New Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rent\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "This endpoint creates a new category in the Expense Tracker system.\n\n**How to use:**\n- Send a POST request to `{{baseUrl}}/api/categories`.\n- The request body must be JSON and include a `name` field. The `name` should be one of the predefined category names, such as `\"Wi-Fi\"` or `\"Electricity Bill\"`.\n- Example request body:\n```json\n{\n  \"name\": \"Wi-Fi\"\n}\n```\n- The `Content-Type` header must be set to `application/json`.\n\n**Successful Response:**\n- Returns HTTP 200 OK.\n- Response body contains the newly created category's `id` and `name`.\n- Example response:\n```json\n{\n  \"id\": 3,\n  \"name\": \"Wi-Fi\"\n}\n```\n"
+					},
+					"response": []
+				},
+				{
+					"name": "New Category With Invalid Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a new category in the system.\n\n**Purpose:**\nUse this POST request to add a new category (e.g., 'Wi-Fi', 'Electricity Bill') to the database.\n\n**Request Body:**\n- `name` (string, required): The name of the category to create. This field cannot be empty or null. Example: `{ \"name\": \"Wi-Fi\" }`\n\n**Expected Response:**\n- On success (valid 'name'), returns the details of the newly created category with a 201 status code.\n- On error (missing or empty 'name'), returns a 400 Bad Request with an error message indicating that the category name cannot be empty.\n\n**Error Handling Example:**\n```\n{\n  \"timestamp\": \"<date-time>\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"Validation failed\",\n  \"errors\": [\"name: Category name cannot be empty\"],\n  \"path\": \"/api/categories\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories"
+							]
+						},
+						"description": "Retrieves all categories of expenses from the API. This endpoint returns a JSON array of category objects, each containing an 'id' and 'name'.\n\nExpected response:\n- Status code: 200 OK\n- Response format: JSON array, e.g. [{\"id\":1,\"name\":\"Wi-Fi\"},{\"id\":2,\"name\":\"School Fees\"},{\"id\":3,\"name\":\"Rent\"}]\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Category by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"1"
+							]
+						},
+						"description": "Retrieves the details of a specific category by its unique ID. This GET request returns a JSON object containing the category's id and name. Example response:\n\n``` json\n{\n    \"id\": 1,\n    \"name\": \"Wi-Fi\"\n}\n\n ```\n\nUse this endpoint to fetch information about a single category for display or further processing. Ensure the category ID in the URL path matches the desired category."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Medical Insurance\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"1"
+							]
+						},
+						"description": "Updated the name attribute of a category with the given id."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Medical Insurance\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"1"
+							]
+						},
+						"description": "Deletes a category from the DB and returns the Id of the deleted record."
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Invalid ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Medical Insurance\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/categories/1333",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"categories",
+								"1333"
+							]
+						},
+						"description": "Return a 404 error when category with a given Id is not found."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Expense",
+			"item": [
+				{
+					"name": "Create Expense",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"January Rent\",\n    \"amount\": 16000.50,\n    \"categoryId\": 1 \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/expenses",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Creates a new expense."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Expense  With Invalid Category ID",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"January Rent\",\n    \"amount\": 16000.50,\n    \"categoryId\": 990 \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/expenses",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Return a 400 error when creating an expense with invalid data."
+					},
+					"response": []
+				},
+				{
+					"name": "All Expenses",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"January Rent\",\n    \"amount\": 16000.50,\n    \"categoryId\": 990 \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/expenses",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"expenses"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Return an array of all expenses in the database."
+					},
+					"response": []
+				},
+				{
+					"name": "Expense by ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"January Rent\",\n    \"amount\": 16000.50,\n    \"categoryId\": 990 \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/expenses/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Returns an expense with the given id or a 404 not found error."
+					},
+					"response": []
+				},
+				{
+					"name": "Expense by Invalid ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"January Rent\",\n    \"amount\": 16000.50,\n    \"categoryId\": 990 \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/expenses/999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"999"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retunrs a 404 error when trying to fetch an expense record that doesn't exist using the id."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Expense",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"January Rent Updated\",\n    \"amount\": 20000.50,\n    \"categoryId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/expenses/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Updates an expense record."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Expense",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/expenses/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Deletes an expense record."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Hello World",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
