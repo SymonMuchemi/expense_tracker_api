@@ -3,6 +3,8 @@ package com.muchemi.expense_tracker.controllers;
 
 import com.muchemi.expense_tracker.dto.expense.ExpenseRequestDTO;
 import com.muchemi.expense_tracker.dto.expense.ExpenseResponseDTO;
+import com.muchemi.expense_tracker.repositories.CategoryRepository;
+import com.muchemi.expense_tracker.services.CategoryService;
 import com.muchemi.expense_tracker.services.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import java.util.List;
 @RequestMapping("api/expenses")
 public class ExpenseController {
     private final ExpenseService expenseService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public ExpenseController(ExpenseService expenseService) {
+    public ExpenseController(ExpenseService expenseService, CategoryService categoryService) {
+        this.categoryService = categoryService;
         this.expenseService = expenseService;
     }
 
@@ -29,7 +33,7 @@ public class ExpenseController {
 
     @GetMapping
     public ResponseEntity<List<ExpenseResponseDTO>> getAllExpenses() {
-        List<ExpenseResponseDTO> expenses = ExpenseService.getAllExpenses();
+        List<ExpenseResponseDTO> expenses = expenseService.getAllExpenses();
 
         return ResponseEntity.ok(expenses);
     }
