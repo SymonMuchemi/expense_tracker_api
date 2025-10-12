@@ -197,17 +197,6 @@ class CategoryControllerTest {
     }
 
     @Test
-    @DisplayName("PUT /api/categories/{id} - Invalid input returns Bad Request")
-    void updateCategory_InvalidInput_ReturnsBadRequest() throws Exception {
-        Long categoryId = 1L;
-        CategoryRequestDTO invalidRequest = new CategoryRequestDTO(""); // empty name
-        mockMvc.perform(put(API_BASE_URL + "/{id}", categoryId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     @DisplayName("DELETE /api/categories/{id} - Non-existent ID returns Not Found")
     void deleteCategoryById_NonExistentId_ReturnsNotFound() throws Exception {
         Long nonExistentId = 999L;

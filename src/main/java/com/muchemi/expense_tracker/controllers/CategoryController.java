@@ -3,6 +3,7 @@ package com.muchemi.expense_tracker.controllers;
 import com.muchemi.expense_tracker.dto.category.CategoryRequestDTO;
 import com.muchemi.expense_tracker.dto.category.CategoryResponseDTO;
 import com.muchemi.expense_tracker.services.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO request) {
+    public ResponseEntity<CategoryResponseDTO> createCategory(@Valid @RequestBody CategoryRequestDTO request) {
         CategoryResponseDTO response = categoryService.createNewCategory(request);
 
         return ResponseEntity.ok(response);

@@ -21,8 +21,8 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO createNewCategory(CategoryRequestDTO dto) {
-            if (dto.name() == null || dto.name().trim().isEmpty()) {
-            throw new ResourceConflictException("Category name cannot be empty or null.");
+        if (dto.name() == null || dto.name().trim().isEmpty() || dto.name().isEmpty() || dto.name().length() == 0) {
+            throw new IllegalArgumentException("Category name cannot be empty or null.");
         }
 
         if (dto.name().length() > 100) {
