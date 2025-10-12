@@ -1,10 +1,14 @@
 package com.muchemi.expense_tracker.controllers;
 
 
+import com.muchemi.expense_tracker.dto.expense.ExpenseRequestDTO;
+import com.muchemi.expense_tracker.dto.expense.ExpenseResponseDTO;
 import com.muchemi.expense_tracker.services.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/expenses")
@@ -14,5 +18,37 @@ public class ExpenseController {
     @Autowired
     public ExpenseController(ExpenseService expenseService) {
         this.expenseService = expenseService;
+    }
+
+    @PostMapping
+    public ResponseEntity<ExpenseResponseDTO> createExpense(@RequestBody ExpenseRequestDTO dto) {
+        ExpenseResponseDTO response = expenseService.createNewExpense(dto);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ExpenseResponseDTO>> getAllExpenses() {
+        List<ExpenseResponseDTO> expenses = ExpenseService.getAllExpenses();
+
+        return ResponseEntity.ok(expenses);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<ExpenseResponseDTO> getExpenseById(@PathVariable Long id) {
+        ExpenseResponseDTO response = expenseService.getExpenseById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ExpenseResponseDTO> updateExpense(@PathVariable Long id, @RequestBody ExpenseRequestDTO dto) {
+        ExpenseResponseDTO updatedExpense = expenseService.updateExpense(id, dto);
+        return ResponseEntity.ok(updatedExpense);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Long> deleteExpenseById(@PathVariable Long id) {
+        Long deletedId = expenseService.removeExpenseById(id);
+        return ResponseEntity.ok(deletedId);
     }
 }

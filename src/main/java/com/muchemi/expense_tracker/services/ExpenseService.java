@@ -9,6 +9,9 @@ import com.muchemi.expense_tracker.repositories.CategoryRepository;
 import com.muchemi.expense_tracker.repositories.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+// TODO: Refactor to reduce code duplication
 @Service
 public class ExpenseService {
     private static ExpenseRepository expenseRepository = null;
@@ -24,7 +27,7 @@ public class ExpenseService {
         return expenseRepository.existsByDescriptionIgnoreCase(normalizedDescription);
     }
 
-   public ExpenseResponseDTO createNewExpense(ExpenseRequestDTO dto) {
+    public ExpenseResponseDTO createNewExpense(ExpenseRequestDTO dto) {
         if (dto.description() == null || dto.description().trim().isEmpty()) {
             throw new IllegalArgumentException("Expense description cannot be empty or null.");
         }
@@ -33,11 +36,7 @@ public class ExpenseService {
             throw new IllegalArgumentException("Expense description cannot exceed 255 characters.");
         }
 
-        String normalizedDescription = dto.description().trim();
-
-        boolean descriptionExists = expenseRepository.existsByDescriptionIgnoreCase(normalizedDescription);
-
-        if (descriptionExists) {
+        if (isDescriptionTaken(dto.description())) {
             throw new IllegalArgumentException("Expense description '" + dto.description() + "' already exists.");
         }
 
@@ -57,5 +56,55 @@ public class ExpenseService {
         } catch (Exception exception) {
             throw new RuntimeException("An error occurred while saving the expense: " + exception.getMessage());
         }
-   }
+    }
+
+    public static List<ExpenseResponseDTO> getAllExpenses() {
+        return expenseRepository.findAll()
+            .stream()
+            .map(expense -> new ExpenseResponseDTO(expense.getId(), expense.getDescription(), expense.getAmount(), expense.getCategory().getId()))
+            .toList();
+    }
+
+    public ExpenseResponseDTO getExpenseById(Long id) {
+        Expense expense = expenseRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
+
+        return new ExpenseResponseDTO(expense.getId(), expense.getDescription(), expense.getAmount(), expense.getCategory().getId());
+    }
+
+    public Long removeExpenseById(Long id) {
+        if (!expenseRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Expense not found with id: " + id);
+        }
+        expenseRepository.deleteById(id);
+        return id;
+    }
+
+    public ExpenseResponseDTO updateExpense(Long id, ExpenseRequestDTO dto) {
+        if (dto.description() == null || dto.description().trim().isEmpty()) {
+            throw new IllegalArgumentException("Expense description cannot be empty or null.");
+        }
+
+        if (dto.description().length() > 255) {
+            throw new IllegalArgumentException("Expense description cannot exceed 255 characters.");
+        }
+
+        Expense expense = expenseRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
+
+        Category category = categoryRepository.findById(dto.categoryId())
+          .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
+
+        expense.setDescription(dto.description());
+        expense.setAmount(dto.amount());
+        expense.setCategory(category);
+
+        try {
+            Expense updatedExpense = expenseRepository.save(expense);
+
+            return new ExpenseResponseDTO(updatedExpense.getId(), updatedExpense.getDescription(), updatedExpense.getAmount(), updatedExpense.getCategory().getId());
+        } catch (Exception exception) {
+            throw new RuntimeException("An error occurred while updating the expense: " + exception.getMessage());
+        }
+    }
 }

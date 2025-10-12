@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// TODO: Refactor to reduce code duplication
 @Service
 public class CategoryService {
     private static CategoryRepository categoryRepository = null;
