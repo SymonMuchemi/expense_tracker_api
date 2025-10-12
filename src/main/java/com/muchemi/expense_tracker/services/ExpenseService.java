@@ -2,6 +2,7 @@ package com.muchemi.expense_tracker.services;
 
 import com.muchemi.expense_tracker.dto.expense.ExpenseRequestDTO;
 import com.muchemi.expense_tracker.dto.expense.ExpenseResponseDTO;
+import com.muchemi.expense_tracker.dto.mappers.ExpenseResponseDTOMapper;
 import com.muchemi.expense_tracker.entities.Category;
 import com.muchemi.expense_tracker.entities.Expense;
 import com.muchemi.expense_tracker.exceptions.ResourceNotFoundException;
@@ -9,6 +10,7 @@ import com.muchemi.expense_tracker.repositories.CategoryRepository;
 import com.muchemi.expense_tracker.repositories.ExpenseRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -27,12 +29,12 @@ public class ExpenseService {
     }
 
     public ExpenseResponseDTO createNewExpense(ExpenseRequestDTO dto) {
-        Expense expense = prepareExpense(dto);
+        Expense preparedExpense = prepareExpense(new Expense(), dto);
 
         try {
-            Expense savedExpense = expenseRepository.save(expense);
+            Expense savedExpense = expenseRepository.save(preparedExpense);
 
-            return new ExpenseResponseDTO(savedExpense.getId(), savedExpense.getDescription(), savedExpense.getAmount(), savedExpense.getCategory().getId());
+            return ExpenseResponseDTOMapper.toDTO(savedExpense);
         } catch (Exception exception) {
             throw new RuntimeException("An error occurred while saving the expense: " + exception.getMessage());
         }
@@ -41,15 +43,16 @@ public class ExpenseService {
     public static List<ExpenseResponseDTO> getAllExpenses() {
         return expenseRepository.findAll()
             .stream()
-            .map(expense -> new ExpenseResponseDTO(expense.getId(), expense.getDescription(), expense.getAmount(), expense.getCategory().getId()))
+            .map(ExpenseResponseDTOMapper::toDTO)
             .toList();
     }
+
 
     public ExpenseResponseDTO getExpenseById(Long id) {
         Expense expense = expenseRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
 
-        return new ExpenseResponseDTO(expense.getId(), expense.getDescription(), expense.getAmount(), expense.getCategory().getId());
+        return ExpenseResponseDTOMapper.toDTO(expense);
     }
 
     public Long removeExpenseById(Long id) {
@@ -61,18 +64,32 @@ public class ExpenseService {
     }
 
     public ExpenseResponseDTO updateExpense(Long id, ExpenseRequestDTO dto) {
-        Expense expense = prepareExpense(dto);
+        Expense expense = expenseRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
+
+        Expense preparedExpense = prepareExpense(expense, dto);
 
         try {
-            Expense updatedExpense = expenseRepository.save(expense);
+            Expense updatedExpense = expenseRepository.save(preparedExpense);
 
-            return new ExpenseResponseDTO(updatedExpense.getId(), updatedExpense.getDescription(), updatedExpense.getAmount(), updatedExpense.getCategory().getId());
+            return ExpenseResponseDTOMapper.toDTO(expense);
         } catch (Exception exception) {
             throw new RuntimeException("An error occurred while updating the expense: " + exception.getMessage());
         }
     }
 
-    private Expense prepareExpense(ExpenseRequestDTO dto) {
+    /**
+     * Prepares and updates an existing Expense entity with data from the given ExpenseRequestDTO.
+     * Validates the description for null, emptiness, length, and uniqueness.
+     * Ensures the category exists.
+     *
+     * @param expense the Expense entity to update
+     * @param dto the ExpenseRequestDTO containing new data
+     * @return the updated Expense entity
+     * @throws IllegalArgumentException if the description is invalid or already exists
+     * @throws ResourceNotFoundException if the category is not found
+     */
+    private Expense prepareExpense(Expense expense, ExpenseRequestDTO dto) {
         if (dto.description() == null || dto.description().trim().isEmpty()) {
             throw new IllegalArgumentException("Expense description cannot be empty or null.");
         }
@@ -85,8 +102,8 @@ public class ExpenseService {
             throw new IllegalArgumentException("Expense description '" + dto.description() + "' already exists.");
         }
 
-        Expense expense = expenseRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Expense not found with id: " + id));
+        LocalDate expenseDate = dto.date() != null ? dto.date() : LocalDate.now();
+        expense.setDate(expenseDate);
 
         Category category = categoryRepository.findById(dto.categoryId())
           .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
