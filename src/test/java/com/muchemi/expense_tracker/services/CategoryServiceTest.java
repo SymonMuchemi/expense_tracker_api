@@ -1,7 +1,7 @@
 package com.muchemi.expense_tracker.services;
 
-import com.muchemi.expense_tracker.dto.CategoryRequestDTO;
-import com.muchemi.expense_tracker.dto.CategoryResponseDTO;
+import com.muchemi.expense_tracker.dto.category.CategoryRequestDTO;
+import com.muchemi.expense_tracker.dto.category.CategoryResponseDTO;
 import com.muchemi.expense_tracker.exceptions.ResourceNotFoundException;
 import com.muchemi.expense_tracker.repositories.CategoryRepository;
 import com.muchemi.expense_tracker.entities.Category;

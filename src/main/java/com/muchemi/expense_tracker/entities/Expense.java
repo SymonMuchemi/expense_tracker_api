@@ -5,16 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "expense")
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -30,15 +32,18 @@ public class Expense {
     @Check(constraints = "amount > 0", name = "amount_must_be_positive")
     private BigDecimal amount;
 
+    @Column(nullable = false)
+    private LocalDate date;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(nullable = false)
     private Instant updatedAt;
 }

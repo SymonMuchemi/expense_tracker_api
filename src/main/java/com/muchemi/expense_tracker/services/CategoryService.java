@@ -1,7 +1,7 @@
 package com.muchemi.expense_tracker.services;
 
-import com.muchemi.expense_tracker.dto.CategoryRequestDTO;
-import com.muchemi.expense_tracker.dto.CategoryResponseDTO;
+import com.muchemi.expense_tracker.dto.category.CategoryRequestDTO;
+import com.muchemi.expense_tracker.dto.category.CategoryResponseDTO;
 import com.muchemi.expense_tracker.entities.Category;
 import com.muchemi.expense_tracker.exceptions.ResourceConflictException;
 import com.muchemi.expense_tracker.exceptions.ResourceNotFoundException;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// TODO: Refactor to reduce code duplication
 @Service
 public class CategoryService {
     private static CategoryRepository categoryRepository = null;
@@ -20,7 +21,7 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO createNewCategory(CategoryRequestDTO dto) {
-        if (dto.name() == null || dto.name().trim().isEmpty()) {
+            if (dto.name() == null || dto.name().trim().isEmpty()) {
             throw new ResourceConflictException("Category name cannot be empty or null.");
         }
 

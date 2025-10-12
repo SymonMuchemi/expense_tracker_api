@@ -64,3 +64,65 @@ Content-Type: application/json
 
 ### Delete a category
 DELETE http://localhost:8080/api/categories/3
+
+### Create a new expense
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 1200,
+  "description": "January Rent",
+  "categoryId": 1
+}
+
+### Create another expense
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 1500,
+  "description": "February Rent",
+  "categoryId": 1
+}
+
+### Get all expenses
+GET http://localhost:8080/api/expenses
+
+### Get a single expense
+GET http://localhost:8080/api/expenses/1
+
+### Update an expense
+PUT http://localhost:8080/api/expenses/2
+Content-Type: application/json
+
+{
+    "amount": 1600,
+    "description": "February Rent Updated",
+    "categoryId": 1
+}
+
+### Create an expense with missing fields
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 300,
+  "expense_description": "Groceries",
+  "categoryId": 4
+}
+
+### Create an expense with a non-existent category
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 300,
+  "description": "Groceries",
+  "categoryId": 99
+}
+
+### Delete an expense
+DELETE http://localhost:8080/api/expenses/1
+
+### Delete a non-existent expense
+DELETE http://localhost:8080/api/expenses/99
