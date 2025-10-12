@@ -64,3 +64,13 @@ Content-Type: application/json
 
 ### Delete a category
 DELETE http://localhost:8080/api/categories/3
+
+### Create a new expense
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "amount": 1200,
+  "description": "January Rent",
+  "categoryId": 1
+}
