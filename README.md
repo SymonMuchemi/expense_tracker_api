@@ -4,8 +4,8 @@ A REST-ful API designed to manage personal financial expenses and categories. Th
 
 ## Features
 
-- [ ] Category Management (CRUD): Add, view, update, and delete spending categories
-- [ ] Record transactions with details like description, amount and date, linking each to a specific category
+- [x] Category Management (CRUD): Add, view, update, and delete spending categories
+- [ ] Record expenses with details like description, amount and date, linking each to a specific category
 - [ ] Uses `Decimal(10, 2)` for amount to ensure accurate financial calculations.
 - [ ] Auditing: Automatic timestamping for creation and last update (`createdAt`, `updateAt`).
 - [ ] Documentation: Fully documented endpoints using Swagger (OpenAPI).
