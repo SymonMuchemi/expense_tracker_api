@@ -2,6 +2,7 @@ package com.muchemi.expense_tracker.services;
 
 import com.muchemi.expense_tracker.dto.category.CategoryRequestDTO;
 import com.muchemi.expense_tracker.dto.category.CategoryResponseDTO;
+import com.muchemi.expense_tracker.dto.mappers.CategoryResponseDTOMapper;
 import com.muchemi.expense_tracker.entities.Category;
 import com.muchemi.expense_tracker.exceptions.ResourceConflictException;
 import com.muchemi.expense_tracker.exceptions.ResourceNotFoundException;
@@ -21,7 +22,7 @@ public class CategoryService {
     }
 
     public CategoryResponseDTO createNewCategory(CategoryRequestDTO dto) {
-        if (dto.name() == null || dto.name().trim().isEmpty() || dto.name().isEmpty() || dto.name().length() == 0) {
+        if (dto.name() == null || dto.name().trim().isEmpty() || dto.name().isEmpty()) {
             throw new IllegalArgumentException("Category name cannot be empty or null.");
         }
 
@@ -41,7 +42,7 @@ public class CategoryService {
         try {
             Category savedCategory = categoryRepository.save(category);
 
-            return new CategoryResponseDTO(savedCategory.getId(), savedCategory.getName());
+            return CategoryResponseDTOMapper.toDTO(savedCategory);
         } catch (DataIntegrityViolationException exception) {
             throw new ResourceConflictException("Category name '" + dto.name() + "' already exists.");
         }
@@ -50,7 +51,7 @@ public class CategoryService {
     public List<CategoryResponseDTO> getAllCategories() {
         return categoryRepository.findAll()
             .stream()
-            .map(category -> new CategoryResponseDTO(category.getId(), category.getName()))
+            .map(CategoryResponseDTOMapper::toDTO)
             .toList();
     }
 
@@ -58,7 +59,7 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
-        return new CategoryResponseDTO(category.getId(), category.getName());
+        return CategoryResponseDTOMapper.toDTO(category);
     }
 
     public Long removeCategoryById(Long id) {
@@ -86,7 +87,7 @@ public class CategoryService {
         try{
             Category updatedCategory = categoryRepository.save(category);
 
-            return new CategoryResponseDTO(updatedCategory.getId(), updatedCategory.getName());
+            return CategoryResponseDTOMapper.toDTO(updatedCategory);
         } catch (DataIntegrityViolationException e) {
             throw new ResourceConflictException("Category name '" + dto.name() + "' already exists or is invalid.");
         }

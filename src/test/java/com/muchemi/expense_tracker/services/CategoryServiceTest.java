@@ -74,7 +74,7 @@ class CategoryServiceTest {
         when(categoryRepository.save(any(Category.class)))
             .thenThrow(new org.springframework.dao.DataIntegrityViolationException("Invalid name"));
 
-        Exception exception = assertThrows(ResourceConflictException.class, () -> {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             categoryService.createNewCategory(dto);
         });
 
