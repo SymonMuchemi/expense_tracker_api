@@ -1,7 +1,7 @@
 package com.muchemi.expense_tracker.controllers;
 
-import com.muchemi.expense_tracker.dto.CategoryRequestDTO;
-import com.muchemi.expense_tracker.dto.CategoryResponseDTO;
+import com.muchemi.expense_tracker.dto.category.CategoryRequestDTO;
+import com.muchemi.expense_tracker.dto.category.CategoryResponseDTO;
 import com.muchemi.expense_tracker.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

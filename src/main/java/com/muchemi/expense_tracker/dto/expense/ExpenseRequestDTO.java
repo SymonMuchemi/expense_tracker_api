@@ -1,4 +1,6 @@
 package com.muchemi.expense_tracker.dto.expense;
 
-public record ExpenseRequestDTO() {
+import java.math.BigDecimal;
+
+public record ExpenseRequestDTO(String description, BigDecimal amount, Long categoryId) {
 }
