@@ -8,6 +8,8 @@ A REST-ful API designed to manage personal financial expenses and categories. Th
 - [x] Record expenses with details like description, amount and date, linking each to a specific category
 - [x] Uses `Decimal(10, 2)` for amount to ensure accurate financial calculations.
 - [x] Auditing: Automatic timestamping for creation and last update (`createdAt`, `updateAt`).
+- [x] Unit tests (services).
+- [x] Intgration tests (controllers).
 
 ## Tech Stack
 
