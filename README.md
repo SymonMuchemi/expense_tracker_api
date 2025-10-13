@@ -12,10 +12,10 @@ A REST-ful API designed to manage personal financial expenses and categories. Th
 ## Tech Stack
 
 - Language: Java 17
-- Framework: Spring Boot 3.5.6
+- Framework: Spring Boot 3.2.0
 - Data Access: Spring Data JPA
 - Database: PostgresSQL
-- Testing: JUnit 5
+- Testing: JUnit 5, Mockito
 - API Documentation: Springdoc OpenAPI (Swagger UI)
 
 ## Database Schema
@@ -56,3 +56,7 @@ Run the application using the Spring Boot Maven plugin:
 ./mvnw clean install
 ./mvnw spring-boot:run
 ```
+
+### Swagger Documentation:
+
+[http://localhost:8080/swagger-ui/index.html#](http://localhost:8080/swagger-ui/index.html#)
