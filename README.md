@@ -10,6 +10,10 @@ A REST-ful API designed to manage personal financial expenses and categories. Th
 - [x] Auditing: Automatic timestamping for creation and last update (`createdAt`, `updateAt`).
 - [x] Unit tests (services).
 - [x] Intgration tests (controllers).
+- [x] API Documentation with Swagger UI.
+- [x] Exception handling with meaningful error responses.
+- [x] Input validation to ensure data integrity using Data Transfer Objects(DTOs).
+- [x] CI pipeline with GitHub Actions for automated testing and building.
 
 ## Tech Stack
 
